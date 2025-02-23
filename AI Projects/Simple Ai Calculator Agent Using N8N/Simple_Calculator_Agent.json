@@ -1,0 +1,145 @@
+{
+  "name": "Simple Calculator Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "df786033-e1f3-4166-a66b-010cf0c24fc8",
+      "name": "When chat message received",
+      "webhookId": "8a47aedd-52ee-484c-be82-a440c56064b3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        220,
+        0
+      ],
+      "id": "51394a09-3e69-4d54-bd4b-cba6db5fb736",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-exp",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        260,
+        220
+      ],
+      "id": "e3d9e342-1074-4d51-aacb-ba2672f3daa0",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "IuBZtWy0VkVWjFDH",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        380,
+        220
+      ],
+      "id": "33e29914-46b3-4967-a9cb-fd94a2db96f3",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "chatId": "1490511336",
+        "text": "={{ $json.output }}",
+        "replyMarkup": "replyKeyboard",
+        "replyKeyboardOptions": {},
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        580,
+        0
+      ],
+      "id": "8039cc71-60ab-4164-a1bf-b058baa9e69a",
+      "name": "Telegram",
+      "webhookId": "ed50eabd-6571-45b8-8ba2-458dfdf2afe5",
+      "credentials": {
+        "telegramApi": {
+          "id": "tZngf9L33amQ8iSC",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "00931e19-fdaf-4c6a-99e3-e051370be09a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b4068612bcfbe2fabcc1c707dbcd46a5e2b4693b551498f8d7a089787ea2e054"
+  },
+  "id": "cB17T1AquTULjlXY",
+  "tags": []
+}
