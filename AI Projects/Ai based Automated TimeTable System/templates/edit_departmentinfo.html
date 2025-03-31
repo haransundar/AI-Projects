@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Edit Department Information</h1>
+<form method="POST" action="{{ url_for('department_info.update_departmentinfo') }}">
+    <!-- Include CSRF Token -->
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    
+    <!-- Hidden Input for Department Name -->
+    <input type="hidden" name="department_name" value="{{ department_info.name }}">
+    
+    <!-- Number of Courses -->
+    <label for="num_courses">Number of Courses:</label>
+    <input type="number" id="num_courses" name="num_courses" value="{{ department_info.courses|length }}" required>
+    
+    <!-- Courses -->
+    <h3>Courses</h3>
+    <div id="courses">
+        {% for course in department_info.courses %}
+            <div class="course" id="course_{{ loop.index0 }}">
+                <input type="text" name="course_type_{{ loop.index0 }}" value="{{ course.type }}" required>
+                <input type="text" name="course_name_{{ loop.index0 }}" value="{{ course.name }}" required>
+                <button type="button" onclick="deleteField('course_{{ loop.index0 }}')">Delete</button>
+            </div>
+        {% endfor %}
+    </div>
+    <button type="button" onclick="addCourse()">Add Course</button>
+    
+    <!-- Faculties -->
+    <h3>Faculties</h3>
+    <div id="faculties">
+        {% for faculty in department_info.faculties %}
+            <div class="faculty" id="faculty_{{ loop.index0 }}">
+                <input type="text" name="faculty_{{ loop.index0 }}" value="{{ faculty }}" required>
+                <button type="button" onclick="deleteField('faculty_{{ loop.index0 }}')">Delete</button>
+            </div>
+        {% endfor %}
+    </div>
+    <button type="button" onclick="addFaculty()">Add Faculty</button>
+    
+    <!-- Labs -->
+    <h3>Labs</h3>
+    <div id="labs">
+        {% for lab in department_info.labs %}
+            <div class="lab" id="lab_{{ loop.index0 }}">
+                <input type="text" name="lab_name_{{ loop.index0 }}" value="{{ lab.name }}" required>
+                <input type="text" name="lab_capacity_{{ loop.index0 }}" value="{{ lab.capacity }}" required>
+                <button type="button" onclick="deleteField('lab_{{ loop.index0 }}')">Delete</button>
+            </div>
+        {% endfor %}
+    </div>
+    <button type="button" onclick="addLab()">Add Lab</button>
+    
+    <!-- Classrooms -->
+    <h3>Classrooms</h3>
+    <div id="classrooms">
+        {% for classroom in department_info.classrooms %}
+            <div class="classroom" id="classroom_{{ loop.index0 }}">
+                <input type="text" name="classroom_name_{{ loop.index0 }}" value="{{ classroom.name }}" required>
+                <input type="text" name="allocated_class_{{ loop.index0 }}" value="{{ classroom.allocated_class }}" required>
+                <button type="button" onclick="deleteField('classroom_{{ loop.index0 }}')">Delete</button>
+            </div>
+        {% endfor %}
+    </div>
+    <button type="button" onclick="addClassroom()">Add Classroom</button>
+    
+    <button type="submit">Update</button>
+</form>
+<script>
+function addCourse() {
+    const coursesDiv = document.getElementById('courses');
+    const courseCount = coursesDiv.childElementCount;
+    const newCourseDiv = document.createElement('div');
+    newCourseDiv.className = 'course';
+    newCourseDiv.id = `course_${courseCount}`;
+    newCourseDiv.innerHTML = `
+        <input type="text" name="course_type_${courseCount}" required>
+        <input type="text" name="course_name_${courseCount}" required>
+        <button type="button" onclick="deleteField('course_${courseCount}')">Delete</button>
+    `;
+    coursesDiv.appendChild(newCourseDiv);
+}
+function addFaculty() {
+    const facultiesDiv = document.getElementById('faculties');
+    const facultyCount = facultiesDiv.childElementCount;
+    const newFacultyDiv = document.createElement('div');
+    newFacultyDiv.className = 'faculty';
+    newFacultyDiv.id = `faculty_${facultyCount}`;
+    newFacultyDiv.innerHTML = `
+        <input type="text" name="faculty_${facultyCount}" required>
+        <button type="button" onclick="deleteField('faculty_${facultyCount}')">Delete</button>
+    `;
+    facultiesDiv.appendChild(newFacultyDiv);
+}
+function addLab() {
+    const labsDiv = document.getElementById('labs');
+    const labCount = labsDiv.childElementCount;
+    const newLabDiv = document.createElement('div');
+    newLabDiv.className = 'lab';
+    newLabDiv.id = `lab_${labCount}`;
+    newLabDiv.innerHTML = `
+        <input type="text" name="lab_name_${labCount}" required>
+        <input type="text" name="lab_capacity_${labCount}" required>
+        <button type="button" onclick="deleteField('lab_${labCount}')">Delete</button>
+    `;
+    labsDiv.appendChild(newLabDiv);
+}
+function addClassroom() {
+    const classroomsDiv = document.getElementById('classrooms');
+    const classroomCount = classroomsDiv.childElementCount;
+    const newClassroomDiv = document.createElement('div');
+    newClassroomDiv.className = 'classroom';
+    newClassroomDiv.id = `classroom_${classroomCount}`;
+    newClassroomDiv.innerHTML = `
+        <input type="text" name="classroom_name_${classroomCount}" required>
+        <input type="text" name="allocated_class_${classroomCount}" required>
+        <button type="button" onclick="deleteField('classroom_${classroomCount}')">Delete</button>
+    `;
+    classroomsDiv.appendChild(newClassroomDiv);
+}
+function deleteField(fieldId) {
+    const field = document.getElementById(fieldId);
+    if (field) {
+        field.remove();
+    }
+}
+</script>
+{% endblock %}

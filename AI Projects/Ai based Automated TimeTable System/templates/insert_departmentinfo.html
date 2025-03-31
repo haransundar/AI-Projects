@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Insert Department Information</h1>
+<form method="post">
+    <!-- Add CSRF Token -->
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    
+    <label for="department_name">Department Name:</label>
+    <select id="department_name" name="department_name" required>
+        {% if departments %}
+            {% for department in departments %}
+                <option value="{{ department }}">{{ department }}</option>
+            {% endfor %}
+        {% else %}
+            <option value="" disabled selected>No departments available</option>
+        {% endif %}
+    </select>
+    
+    <label for="num_courses">Number of Courses:</label>
+    <input type="number" id="num_courses" name="num_courses" required>
+    
+    <div id="course_fields"></div>
+    
+    <label for="num_faculties">Number of Faculties:</label>
+    <input type="number" id="num_faculties" name="num_faculties" required>
+    
+    <div id="faculty_fields"></div>
+    
+    <label for="num_labs">Number of Labs:</label>
+    <input type="number" id="num_labs" name="num_labs" required>
+    
+    <div id="lab_fields"></div>
+    
+    <label for="num_classrooms">Number of Classrooms:</label>
+    <input type="number" id="num_classrooms" name="num_classrooms" required>
+    
+    <div id="classroom_fields"></div>
+    
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+document.getElementById('num_courses').addEventListener('input', function() {
+    var numCourses = parseInt(this.value);
+    var courseFields = document.getElementById('course_fields');
+    courseFields.innerHTML = '';
+    var selectedCourses = [];
+    for (var i = 0; i < numCourses; i++) {
+        // Course Type Dropdown
+        var courseType = document.createElement('select');
+        courseType.name = 'course_type_' + i;
+        courseType.required = true;
+        var courseTypeOptions = ['B.E', 'B.Tech', 'M.E', 'M.Tech'];
+        courseTypeOptions.forEach(function(option) {
+            var opt = document.createElement('option');
+            opt.value = option;
+            opt.text = option;
+            courseType.appendChild(opt);
+        });
+        courseFields.appendChild(courseType);
+
+        // Course Name Dropdown
+        var courseName = document.createElement('select');
+        courseName.name = 'course_name_' + i;
+        courseName.required = true;
+        var courseNameOptions = {{ courses | tojson | safe }};
+        if (!Array.isArray(courseNameOptions)) {
+            console.error('Invalid or missing courses data.');
+            courseNameOptions = [];
+        }
+        courseNameOptions.forEach(function(option) {
+            if (!selectedCourses.includes(option)) {
+                var opt = document.createElement('option');
+                opt.value = option;
+                opt.text = option;
+                courseName.appendChild(opt);
+            }
+        });
+        courseName.addEventListener('change', function() {
+            selectedCourses.push(this.value);
+            updateCourseFields();
+        });
+        courseFields.appendChild(courseName);
+    }
+    function updateCourseFields() {
+        for (var i = 0; i < numCourses; i++) {
+            var courseName = document.getElementsByName('course_name_' + i)[0];
+            var selectedValue = courseName.value;
+            courseName.innerHTML = '';
+            courseNameOptions.forEach(function(option) {
+                if (!selectedCourses.includes(option) || option === selectedValue) {
+                    var opt = document.createElement('option');
+                    opt.value = option;
+                    opt.text = option;
+                    courseName.appendChild(opt);
+                }
+            });
+            courseName.value = selectedValue;
+        }
+    }
+});
+
+document.getElementById('num_faculties').addEventListener('input', function() {
+    var numFaculties = parseInt(this.value);
+    var facultyFields = document.getElementById('faculty_fields');
+    facultyFields.innerHTML = '';
+    for (var i = 0; i < numFaculties; i++) {
+        var facultyInput = document.createElement('input');
+        facultyInput.type = 'text';
+        facultyInput.name = 'faculty_' + i;
+        facultyInput.required = true;
+        facultyFields.appendChild(facultyInput);
+    }
+});
+
+document.getElementById('num_labs').addEventListener('input', function() {
+    var numLabs = parseInt(this.value);
+    var labFields = document.getElementById('lab_fields');
+    labFields.innerHTML = '';
+    for (var i = 0; i < numLabs; i++) {
+        var labRow = document.createElement('div');
+        labRow.style.display = 'flex';
+        labRow.style.marginBottom = '10px';
+        var labName = document.createElement('input');
+        labName.type = 'text';
+        labName.name = 'lab_name_' + i;
+        labName.required = true;
+        labName.placeholder = 'Lab Name';
+        labName.style.flex = '1';
+        labName.style.marginRight = '10px';
+        labRow.appendChild(labName);
+        
+        var labCapacity = document.createElement('input');
+        labCapacity.type = 'number';
+        labCapacity.name = 'lab_capacity_' + i;
+        labCapacity.required = true;
+        labCapacity.placeholder = 'Capacity';
+        labCapacity.style.flex = '1';
+        labRow.appendChild(labCapacity);
+        labFields.appendChild(labRow);
+    }
+});
+
+document.getElementById('num_classrooms').addEventListener('input', function() {
+    var numClassrooms = parseInt(this.value);
+    var classroomFields = document.getElementById('classroom_fields');
+    classroomFields.innerHTML = '';
+    for (var i = 0; i < numClassrooms; i++) {
+        var classroomRow = document.createElement('div');
+        classroomRow.style.display = 'flex';
+        classroomRow.style.marginBottom = '10px';
+        var classroomName = document.createElement('input');
+        classroomName.type = 'text';
+        classroomName.name = 'classroom_name_' + i;
+        classroomName.required = true;
+        classroomName.placeholder = 'Classroom Name';
+        classroomName.style.flex = '1';
+        classroomName.style.marginRight = '10px';
+        classroomRow.appendChild(classroomName);
+        
+        var allocatedClass = document.createElement('select');
+        allocatedClass.name = 'allocated_class_' + i;
+        allocatedClass.required = true;
+        var allocatedClassOptions = ['2nd Year', '3rd Year', 'Final Year', 'Empty'];
+        allocatedClassOptions.forEach(function(option) {
+            var opt = document.createElement('option');
+            opt.value = option;
+            opt.text = option;
+            allocatedClass.appendChild(opt);
+        });
+        allocatedClass.style.flex = '1';
+        classroomRow.appendChild(allocatedClass);
+        classroomFields.appendChild(classroomRow);
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="section">
+    <h2>Table Generation System</h2>
+    <a href="{{ url_for('timetable.faculty_timetable') }}">Faculty Timetable</a>
+    <a href="{{ url_for('timetable.class_timetable') }}">Student (Class) Timetable</a>
+    <a href="{{ url_for('timetable.lab_timetable') }}">Lab Timetable</a>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>College Timetable Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('college_info_bp.insert_info') }}">Insert Info</a></li>
+                <li><a href="{{ url_for('college_info_bp.view_info') }}">View Info</a></li>
+                <li><a href="{{ url_for('department_info.insert_departmentinfo') }}">Insert Department Info</a></li>
+                <li><a href="{{ url_for('department_info.view_departmentinfo') }}">View Department Info</a></li>
+                <li><a href="{{ url_for('timetable.index') }}">Timetable Generation</a></li>
+            </ul>
+        </nav>
+        <h1>College Timetable Management</h1>
+    </header>
+    <main>
+        {% block content %}
+        <!-- Content will be inserted here by child templates -->
+        {% endblock %}
+    </main>
+</body>
+</html>

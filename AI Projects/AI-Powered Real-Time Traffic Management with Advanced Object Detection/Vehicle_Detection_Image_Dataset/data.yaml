@@ -1,0 +1,5 @@
+train: D:/AI-Powered Real-Time Traffic Management with Advanced Object Detection/Vehicle_Detection_Image_Dataset/train
+val: D:/AI-Powered Real-Time Traffic Management with Advanced Object Detection/Vehicle_Detection_Image_Dataset/valid
+
+nc: 5  # Number of classes
+names: ['car', 'bike', 'van', 'lorry', 'ambulance']

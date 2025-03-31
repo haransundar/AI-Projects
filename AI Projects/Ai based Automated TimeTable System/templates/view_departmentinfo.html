@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>View Department Information</h1>
+<!-- Display Department Information -->
+{% for department_name, department_info in department_data.items() %}
+    <div class="department">
+        <h2>{{ department_name }}</h2>
+        <button onclick="editDepartment('{{ department_name }}')">Edit</button>
+        <button onclick="deleteDepartment('{{ department_name }}')">Delete</button>
+        
+        <h3>Courses</h3>
+        <ul>
+            {% for course in department_info.courses %}
+                <li>{{ course.type }} - {{ course.name }}</li>
+            {% endfor %}
+        </ul>
+        
+        <h3>Faculties</h3>
+        <ul>
+            {% for faculty in department_info.faculties %}
+                <li>{{ faculty }}</li>
+            {% endfor %}
+        </ul>
+        
+        <h3>Labs</h3>
+        <ul>
+            {% for lab in department_info.labs %}
+                <li>{{ lab.name }} (Capacity: {{ lab.capacity }})</li>
+            {% endfor %}
+        </ul>
+        
+        <h3>Classrooms</h3>
+        <ul>
+            {% for classroom in department_info.classrooms %}
+                <li>{{ classroom.name }} (Allocated to: {{ classroom.allocated_class }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endfor %}
+<script>
+// Inject CSRF token from Flask-WTF into the page (provided by Jinja2)
+const csrfToken = "{{ csrf_token() }}";
+
+function deleteDepartment(departmentName) {
+    // Confirm deletion with the user
+    if (confirm(`Are you sure you want to delete the department: ${departmentName}?`)) {
+        fetch('/department/delete_departmentinfo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken  // Add CSRF token to headers
+            },
+            body: JSON.stringify({ department_name: departmentName })
+        })
+        .then(response => {
+            // Check if the response is OK (status 200) before parsing JSON
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert(data.message || 'Department deleted successfully!');
+                location.reload(); // Refresh the page to reflect changes
+            } else {
+                // Use the error message from the backend if available
+                alert(data.message || 'Failed to delete department.');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting department:', error);
+            alert('An error occurred while deleting the department. Please try again.');
+        });
+    }
+}
+
+// Edit Department Functionality
+function editDepartment(departmentName) {
+    // Redirect to the edit page for the specified department
+    window.location.href = `{{ url_for('department_info.edit_departmentinfo', department_name='') }}${encodeURIComponent(departmentName)}`;
+}
+</script>
+{% endblock %}

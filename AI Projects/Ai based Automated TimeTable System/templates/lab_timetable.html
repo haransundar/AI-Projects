@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Lab Timetable</h1>
+<form method="GET" action="{{ url_for('timetable.lab_timetable') }}">
+    <select name="department" onchange="this.form.submit()">
+        {% for dept in departments %}
+            <option value="{{ dept }}" {% if dept == selected_department %}selected{% endif %}>{{ dept }}</option>
+        {% endfor %}
+    </select>
+</form>
+
+{% if timetable %}
+    <div class="section">
+        <h2>Lab Timetable</h2>
+        {% for lab, schedule in timetable.items() %}
+            <h3>{{ lab }}</h3>
+            <table>
+                <tr>
+                    <th>Day</th>
+                    <th>Period 1</th>
+                    <th>Period 2</th>
+                    <th>Period 3</th>
+                    <th>Period 4</th>
+                    <th>Period 5</th>
+                    <th>Period 6</th>
+                    <th>Period 7</th>
+                    <th>Period 8</th>
+                </tr>
+                {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
+                <tr>
+                    <td>{{ day }}</td>
+                    <td>{{ schedule.get(day, {}).get('Period1', '-') }}</td>
+                    <td>{{ schedule.get(day, {}).get('Period2', '-') }}</td>
+                    <td>{{ schedule.get(day, {}).get('Period3', '-') }}</td>
+                    <td>{{ schedule.get(day, {}).get('Period4', '-') }}</td>
+                    <td>{{ schedule.get(day, {}).get('Period5', '-') }}</td>
+                    <td>{{ schedule.get(day, {}).get('Period6', '-') }}</td>
+                    <td>{{ schedule.get(day, {}).get('Period7', '-') }}</td>
+                    <td>{{ schedule.get(day, {}).get('Period8', '-') }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

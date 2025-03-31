@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Insert College Information</h2>
+<form method="POST">
+    <!-- Course Section -->
+    <label for="num_courses">Number of Courses:</label>
+    <select id="num_courses" name="num_courses" onchange="generateCourseFields()">
+        <option value="0">Select Number of Courses</option>
+        {% for i in range(1, 20) %}
+        <option value="{{ i }}">{{ i }}</option>
+        {% endfor %}
+    </select>
+    <div id="course_fields"></div>
+
+    <!-- Department Section -->
+    <label for="num_departments">Number of Departments:</label>
+    <select id="num_departments" name="num_departments" onchange="generateDepartmentFields()">
+        <option value="0">Select Number of Departments</option>
+        {% for i in range(1, 20) %}
+        <option value="{{ i }}">{{ i }}</option>
+        {% endfor %}
+    </select>
+    <div id="department_fields"></div>
+
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+    function generateCourseFields() {
+        const numCourses = document.getElementById('num_courses').value;
+        let fields = '';
+        for (let i = 0; i < numCourses; i++) {
+            fields += `
+                <div>
+                    <select name="course[]">
+                        <option value="B.E">B.E</option>
+                        <option value="B.Tech">B.Tech</option>
+                        <option value="M.E">M.E</option>
+                        <option value="M.Tech">M.Tech</option>
+                    </select>
+                    <input type="text" name="course[]" placeholder="Enter Course Name">
+                </div>
+            `;
+        }
+        document.getElementById('course_fields').innerHTML = fields;
+    }
+
+    function generateDepartmentFields() {
+        const numDepartments = document.getElementById('num_departments').value;
+        let fields = '';
+        for (let i = 0; i < numDepartments; i++) {
+            fields += `<input type="text" name="department[]" placeholder="Enter Department Name"><br>`;
+        }
+        document.getElementById('department_fields').innerHTML = fields;
+    }
+</script>
+{% endblock %}
